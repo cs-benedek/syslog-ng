@@ -1,8 +1,10 @@
-import pytest
 import socket
+
+import pytest
 
 input_log = "<38>Feb 11 21:27:22 testhost testprogram[9999]: test message\n"
 expected_log = "Feb 11 21:27:22 {} testhost testprogram[9999]: test message\n".format(socket.gethostname())
+
 
 @pytest.mark.parametrize(
     "input_log, expected_log, counter", [
@@ -10,7 +12,7 @@ expected_log = "Feb 11 21:27:22 {} testhost testprogram[9999]: test message\n".f
         (input_log, expected_log, 10),
     ], ids=["with_one_log", "with_ten_logs"],
 )
-def test_acceptance_with_hostname_check(config, syslog_ng, input_log, expected_log, counter):
+def test_hostname_check(config, syslog_ng, input_log, expected_log, counter):
     file_source = config.create_file_source(file_name="input.log", check_hostname="yes")
     file_destination = config.create_file_destination(file_name="output.log")
     config.create_logpath(statements=[file_source, file_destination])
